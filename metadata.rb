@@ -4,7 +4,7 @@ name             "epipe"
 license          "Apache v2.0"
 description      "Installs/Configures a HopsFS to ElasticSearch connector"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "0.9.0"
+version          "1.0.0"
 source_url       "https://github.com/hopshadoop/epipe-chef"
 
 %w{ ubuntu debian centos }.each do |os|
@@ -55,3 +55,8 @@ attribute "install/dir",
 attribute "install/user",
           :description => "User to install the services as",
           :type => "string"
+
+attribute "epipe/metrics_port",
+          :description => "Port on which metrics are exposed",
+          :type => "string"
+
