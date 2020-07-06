@@ -1,6 +1,13 @@
 # ePipe Configurations
 
 reindex = true
+<% if node['elastic']['projects']['reindex'].casecmp?("true") && node['elastic']['featurestore']['reindex'].casecmp?("true") %>
+reindex_of = all
+<% elsif node['elastic']['projects']['reindex'].casecmp?("true") %>
+reindex_of = project
+<% elsif node['elastic']['featurestore']['reindex'].casecmp?("true") %>
+reindex_of = featurestore
+<% end %>
 
 # general configuration
 
@@ -13,11 +20,17 @@ lru_cap = 10000
 
 # log level trace=0, debug=1, info=2, warn=3, error=4, fatal=5
 log_level = 2
+# log rotation size in bytes
+log_rotation_size=<%=node['epipe']['log_rotation_size']%>
+log_dir=<%=node['epipe']['log_dir']%>
+# maximum number of log files to keep
+log_max_files=<%=node['epipe']['log_max_files']%>
 
 # ElasticSearch configuration
 
 elastic_addr = <%= @elastic_addr %>
 index = projects
+featurestore_index = featurestore
 app_provenance_index = appprovenance
 elastic_batch = 20000
 ewait_time = 5000

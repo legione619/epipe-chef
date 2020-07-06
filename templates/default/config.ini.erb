@@ -14,6 +14,11 @@ recovery = true
 
 # log level trace=0, debug=1, info=2, warn=3, error=4, fatal=5
 log_level = 2
+# log rotation size in bytes
+log_rotation_size=<%=node['epipe']['log_rotation_size']%>
+log_dir=<%=node['epipe']['log_dir']%>
+# maximum number of log files to keep
+log_max_files=<%=node['epipe']['log_max_files']%>
 # Table tailer barrier type. EPOCH=0, GCI=1
 barrier = 0
 
@@ -46,6 +51,7 @@ provenance_tu = 5
 
 elastic_addr = <%= @elastic_addr %>
 index = <%= node['elastic']['epipe']['search_index'] %>
+featurestore_index = <%= node['elastic']['epipe']['featurestore_index'] %>
 app_provenance_index = <%= node['elastic']['epipe']['app_provenance_index'] %>
 elastic_batch = 5000
 ewait_time = 5000
