@@ -4,7 +4,7 @@ name             "epipe"
 license          "Apache v2.0"
 description      "Installs/Configures a HopsFS to ElasticSearch connector"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "1.3.0"
+version          "1.4.0"
 source_url       "https://github.com/hopshadoop/epipe-chef"
 
 %w{ ubuntu debian centos }.each do |os|
@@ -31,8 +31,8 @@ attribute "epipe/user",
           :description => "User to run Epipe server as",
           :type => "string"
 
-attribute "epipe/group",
-          :description => "Group to run Epipe server as",
+attribute "epipe/user-home",
+          :description => "Home directory of epipe user",
           :type => "string"
 
 attribute "epipe/version",

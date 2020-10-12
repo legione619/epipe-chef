@@ -1,7 +1,6 @@
 nmy_ip = my_private_ip()
 my_public_ip = my_public_ip()
 
-
 nn = private_recipe_ip("hops", "nn") + ":#{node['hops']['nn']['port']}"
 elastic = all_elastic_ips_ports_str()
 
@@ -12,16 +11,19 @@ file "#{node['epipe']['base_dir']}/conf/config.ini" do
   action :delete
 end
 
+crypto_dir = x509_helper.get_crypto_dir(node['epipe']['user'])
+hops_ca = "#{crypto_dir}/#{x509_helper.get_hops_ca_bundle_name()}"
 template"#{node['epipe']['base_dir']}/conf/config.ini" do
    source "config.ini.erb"
    owner node['epipe']['user']
-   group node['epipe']['group']
+   group node['hops']['group']
    mode 0750
    variables({:ndb_connectstring => node['ndb']['connectstring'],
                 :database => "hops",
                 :meta_database => "hopsworks",
                 :hivemeta_database => "metastore",
                 :elastic_addr => elastic,
+                :hops_ca => hops_ca
             })
  end
 
@@ -32,34 +34,35 @@ template"#{node['epipe']['base_dir']}/conf/config.ini" do
  template"#{node['epipe']['base_dir']}/conf/config-reindex.ini" do
     source "config-reindex.ini.erb"
     owner node['epipe']['user']
-    group node['epipe']['group']
+    group node['hops']['group']
     mode 0750
     variables({:ndb_connectstring => node['ndb']['connectstring'],
                  :database => "hops",
                  :meta_database => "hopsworks",
                  :hivemeta_database => "metastore",
                  :elastic_addr => elastic,
+                 :hops_ca => hops_ca
              })
   end
 
 template"#{node['epipe']['base_dir']}/bin/start-epipe.sh" do
   source "start-epipe.sh.erb"
   owner node['epipe']['user']
-  group node['epipe']['group']
+  group node['hops']['group']
   mode 0750
 end
 
 template"#{node['epipe']['base_dir']}/bin/reindex-epipe.sh" do
   source "reindex-epipe.sh.erb"
   owner node['epipe']['user']
-  group node['epipe']['group']
+  group node['hops']['group']
   mode 0750
 end
 
 template"#{node['epipe']['base_dir']}/bin/stop-epipe.sh" do
   source "stop-epipe.sh.erb"
   owner node['epipe']['user']
-  group node['epipe']['group']
+  group node['hops']['group']
   mode 0750
 end
 
@@ -133,7 +136,7 @@ else #sysv
   template "/etc/init.d/#{service_name}" do
     source "#{service_name}.erb"
     owner node['epipe']['user']
-    group node['epipe']['group']
+    group node['hops']['group']
     mode 0754
 if node['services']['enabled'] == "true"
     notifies :enable, resources(:service => service_name)
@@ -143,10 +146,17 @@ end
 
 end
 
-
 if node['kagent']['enabled'] == "true"
    kagent_config service_name do
      service "Hops"
      log_file "#{node['epipe']['base_dir']}/epipe.log"
    end
+end
+
+if service_discovery_enabled()
+  # Register epipe with Consul
+  consul_service "Registering ePipe with Consul" do
+    service_definition "epipe-consul.hcl.erb"
+    action :register
+  end
 end

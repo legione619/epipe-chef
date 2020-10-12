@@ -10,6 +10,8 @@ meta_database = <%= @meta_database %>
 hive_meta_database = <%= @hivemeta_database %>
 poll_maxTimeToWait = 2000
 lru_cap = 10000
+prov_file_lru_cap = 10000
+prov_core_lru_cap = 100
 recovery = true
 
 # log level trace=0, debug=1, info=2, warn=3, error=4, fatal=5
@@ -58,7 +60,7 @@ ewait_time = 5000
 
 <% if node['elastic']['opendistro_security']['enabled'].casecmp?("true") %>
 ssl_enabled = <%=node['elastic']['opendistro_security']['https']['enabled'].casecmp?("true") %>
-ca_path = <%=node['elastic']['opendistro_security']['ca'] %>
+ca_path = <%= @hops_ca %>
 username = <%=node['elastic']['opendistro_security']['epipe']['username'] %>
 password = <%=node['elastic']['opendistro_security']['epipe']['password'] %>
 <% end %>
