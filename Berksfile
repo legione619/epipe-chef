@@ -3,8 +3,8 @@ source 'https://supermarket.chef.io'
 
 metadata
 
-cookbook 'kagent', github: "giabbo79/kagent-chef", branch: "2.1"
-cookbook 'hops', github: "giabbo79/hops-hadoop-chef", branch: "2.1"
-cookbook 'ndb', github: "giabbo79/ndb-chef", branch: "2.1"
-cookbook 'elastic', github: "giabbo79/elasticsearch-chef", branch: "2.1" 
+cookbook 'kagent', github: "giabbo79/kagent-chef", branch: "2.2"
+cookbook 'hops', github: "giabbo79/hops-hadoop-chef", branch: "2.2"
+cookbook 'ndb', github: "giabbo79/ndb-chef", branch: "2.2"
+cookbook 'elastic', github: "giabbo79/elasticsearch-chef", branch: "2.2" 
 
